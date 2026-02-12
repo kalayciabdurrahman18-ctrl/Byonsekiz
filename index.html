@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reis Portföy & Radar</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background:#0d1117;
+    color:#c9d1d9;
+    margin:0;
+    padding:15px;
+}
+.container { max-width:900px; margin:auto; }
+.header {
+    background:#161b22;
+    padding:20px;
+    text-align:center;
+    border-radius:10px 10px 0 0;
+    border-bottom:2px solid #30363d;
+}
+h1 { color:#58a6ff; margin:0; font-size:22px; }
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    background:#161b22;
+    border-radius:0 0 10px 10px;
+    overflow:hidden;
+}
+th, td {
+    padding:14px;
+    border-bottom:1px solid #30363d;
+}
+th {
+    background:#21262d;
+    color:#58a6ff;
+    font-size:11px;
+    text-transform:uppercase;
+}
+
+.tavan { color:#3fb950; font-weight:bold; }
+.bekle { color:#8b949e; font-weight:bold; }
+.ekle { color:#388bfd; font-weight:bold; }
+.silBtn {
+    background:#da3633;
+    color:#fff;
+    border:none;
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.form-box {
+    margin-top:25px;
+    background:#161b22;
+    padding:20px;
+    border-radius:10px;
+}
+.form-box input, .form-box select {
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    background:#0d1117;
+    border:1px solid #30363d;
+    color:#fff;
+    border-radius:6px;
+}
+.form-box button {
+    margin-top:15px;
+    width:100%;
+    padding:12px;
+    background:#238636;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    cursor:pointer;
+}
+.info-footer {
+    margin-top:20px;
+    font-size:11px;
+    color:#8b949e;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="header">
+<h1>🚀 REİS PORTFÖY YÖNETİMİ</h1>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Hisse</th>
+<th>Fiyat / Not</th>
+<th>Durum</th>
+<th>Sil</th>
+</tr>
+</thead>
+<tbody id="portfolio"></tbody>
+</table>
+
+<div class="form-box">
+<h3>➕ Manuel Hisse Ekle</h3>
+<input id="hisse" placeholder="Hisse Kodu (ASELS)">
+<input id="fiyat" placeholder="Fiyat / Not">
+<select id="durum">
+    <option value="tavan">ELİNDE TUT</option>
+    <option value="bekle">BEKLE</option>
+    <option value="ekle">HİSSE EKLE</option>
+</select>
+<button onclick="ekle()">Kaydet</button>
+</div>
+
+<div class="info-footer">
+Veriler cihazda saklanır (localStorage) • GitHub Pages uyumlu
+</div>
+
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("portfoy")) || [];
+
+function kaydet() {
+    localStorage.setItem("portfoy", JSON.stringify(data));
+}
+
+function render() {
+    const tbody = document.getElementById("portfolio");
+    tbody.innerHTML = "";
+    data.forEach((item, i) => {
+        tbody.innerHTML += `
+        <tr>
+            <td><strong>${item.hisse}</strong></td>
+            <td>${item.fiyat}</td>
+            <td class="${item.durum}">${item.durum.toUpperCase()}</td>
+            <td><button class="silBtn" onclick="sil(${i})">X</button></td>
+        </tr>`;
+    });
+}
+
+function ekle() {
+    const hisse = document.getElementById("hisse").value.trim();
+    const fiyat = document.getElementById("fiyat").value.trim();
+    const durum = document.getElementById("durum").value;
+    if(!hisse) return alert("Hisse adı gir");
+    data.push({hisse, fiyat, durum});
+    kaydet();
+    render();
+    document.getElementById("hisse").value="";
+    document.getElementById("fiyat").value="";
+}
+
+function sil(i) {
+    data.splice(i,1);
+    kaydet();
+    render();
+}
+
+render();
+</script>
+
+</body>
+</html>
