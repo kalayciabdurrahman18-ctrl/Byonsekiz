@@ -1,180 +1,182 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reis Portföy & Radar</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reis Portföy & Radar</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #0d1117; color: #c9d1d9; margin: 0; padding: 15px; }
+        .header { background: #161b22; padding: 20px; text-align: center; border-bottom: 2px solid #30363d; border-radius: 10px 10px 0 0; }
+        h1 { color: #58a6ff; margin: 0; font-size: 22px; letter-spacing: 1px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        /* Portföy Tablosu */
+        table { width: 100%; border-collapse: collapse; background: #161b22; border-radius: 0 0 10px 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #30363d; }
+        th { background: #21262d; color: #58a6ff; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        
+        /* Durum Renkleri */
+        .tavan { color: #3fb950; font-weight: bold; animation: blink 2s infinite; }
+        .hisse-ekle { color: #388bfd; font-weight: bold; }
+        .bekle { color: #8b949e; font-weight: bold; }
+        .uyari { color: #d29922; font-weight: bold; }
+        
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-<style>
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background:#0d1117;
-    color:#c9d1d9;
-    margin:0;
-    padding:15px;
-}
-.container { max-width:900px; margin:auto; }
-.header {
-    background:#161b22;
-    padding:20px;
-    text-align:center;
-    border-radius:10px 10px 0 0;
-    border-bottom:2px solid #30363d;
-}
-h1 { color:#58a6ff; margin:0; font-size:22px; }
+        .silBtn {
+            background:#da3633;
+            color:#fff;
+            border:none;
+            padding:6px 10px;
+            border-radius:6px;
+            cursor:pointer;
+        }
 
-table {
-    width:100%;
-    border-collapse:collapse;
-    background:#161b22;
-    border-radius:0 0 10px 10px;
-    overflow:hidden;
-}
-th, td {
-    padding:14px;
-    border-bottom:1px solid #30363d;
-}
-th {
-    background:#21262d;
-    color:#58a6ff;
-    font-size:11px;
-    text-transform:uppercase;
-}
-
-.tavan { color:#3fb950; font-weight:bold; }
-.bekle { color:#8b949e; font-weight:bold; }
-.ekle { color:#388bfd; font-weight:bold; }
-.silBtn {
-    background:#da3633;
-    color:#fff;
-    border:none;
-    padding:6px 10px;
-    border-radius:6px;
-    cursor:pointer;
-}
-
-.form-box {
-    margin-top:25px;
-    background:#161b22;
-    padding:20px;
-    border-radius:10px;
-}
-.form-box input, .form-box select {
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    background:#0d1117;
-    border:1px solid #30363d;
-    color:#fff;
-    border-radius:6px;
-}
-.form-box button {
-    margin-top:15px;
-    width:100%;
-    padding:12px;
-    background:#238636;
-    color:#fff;
-    border:none;
-    border-radius:8px;
-    font-size:15px;
-    cursor:pointer;
-}
-.info-footer {
-    margin-top:20px;
-    font-size:11px;
-    color:#8b949e;
-    text-align:center;
-}
-</style>
+        /* Ekleme Formu */
+        .form-box {
+            margin-top: 20px;
+            background:#161b22;
+            padding:15px;
+            border-radius:10px;
+        }
+        .form-box input, .form-box select {
+            width:100%;
+            padding:8px;
+            margin-top:8px;
+            background:#0d1117;
+            border:1px solid #30363d;
+            color:#fff;
+            border-radius:6px;
+            font-size:13px;
+        }
+        .form-box button {
+            margin-top:10px;
+            width:100%;
+            padding:10px;
+            background:#238636;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            font-size:14px;
+            cursor:pointer;
+        }
+        
+        /* Radar Kutusu */
+        .radar-box { background: #ffcc0011; border: 1px solid #ffcc00; padding: 20px; border-radius: 10px; margin-top: 25px; }
+        .radar-title { color: #ffcc00; font-size: 18px; font-weight: bold; display: block; margin-bottom: 10px; }
+        .radar-list { font-size: 14px; padding-left: 20px; color: #fff; line-height: 1.8; }
+        
+        /* Bilgi Notu */
+        .info-footer { margin-top: 20px; font-size: 11px; color: #8b949e; text-align: center; border-top: 1px solid #30363d; padding-top: 10px; }
+    </style>
 </head>
-
 <body>
+
 <div class="container">
+    <div class="header">
+        <h1>🚀 REİS PORTFÖY YÖNETİMİ</h1>
+    </div>
 
-<div class="header">
-<h1>🚀 REİS PORTFÖY & RADAR</h1>
-</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Hisse</th>
+                <th>Durum / Fiyat</th>
+                <th>Aksiyon (Reis)</th>
+                <th>Sil</th>
+            </tr>
+        </thead>
+        <tbody id="portfoy-body">
+            <!-- Satırlar JS ile doldurulacak -->
+        </tbody>
+    </table>
 
-<table>
-<thead>
-<tr>
-<th>Hisse</th>
-<th>Fiyat / Not</th>
-<th>Durum</th>
-<th>Sil</th>
-</tr>
-</thead>
-<tbody id="portfolio"></tbody>
-</table>
+    <div class="form-box">
+        <strong>➕ Manuel Hisse Ekle / Güncelle</strong>
+        <input id="hisse" placeholder="Hisse Kodu ( örn: AKHAN )">
+        <input id="durumFiyat" placeholder="Durum / Fiyat (örn: 5. Gün / +0.2% veya 123.10 TL)">
+        <select id="aksiyon">
+            <option value="tavan">ELİNDE TUT</option>
+            <option value="hisse-ekle">HİSSE EKLE</option>
+            <option value="bekle">BEKLE</option>
+            <option value="uyari">UYARI</option>
+        </select>
+        <button onclick="ekle()">Ekle</button>
+    </div>
 
-<div class="form-box">
-<h3>➕ Manuel Hisse Ekle</h3>
-<input id="hisse" placeholder="Hisse Kodu (ASELS)">
-<input id="fiyat" placeholder="Fiyat / Not">
-<select id="durum">
-    <option value="tavan">ELİNDE TUT</option>
-    <option value="bekle">BEKLE</option>
-    <option value="ekle">HİSSE EKLE</option>
-</select>
-<button onclick="ekle()">Kaydet</button>
-</div>
+    <div class="radar-box">
+        <span class="radar-title">🎯 GÜNLÜK RADAR & POTANSİYEL</span>
+        <ul class="radar-list">
+            <li><strong>ASTOR:</strong> 122 TL direnci kırıldı, hedef 130+.</li>
+            <li><strong>SMRTG:</strong> 68.50 TL desteği üzerinde güç topluyor.</li>
+            <li><strong>MIATK:</strong> Teknoloji grubunda hacim artışı takip ediliyor.</li>
+        </ul>
+    </div>
 
-<div class="info-footer">
-Veriler cihazda saklanır (localStorage) • GitHub Pages uyumlu
-</div>
-
+    <div class="info-footer">
+        NETCD çıkışı yapıldı, kâr realize edildi. Veriler manuel güncellenir.
+    </div>
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("portfoy")) || [];
-
-function kaydet() {
-    localStorage.setItem("portfoy", JSON.stringify(data));
-}
-
-function render() {
-    const tbody = document.getElementById("portfolio");
-    tbody.innerHTML = "";
-    data.forEach((item, i) => {
-        tbody.innerHTML += `
-        <tr>
-            <td><strong>${item.hisse}</strong></td>
-            <td>${item.fiyat}</td>
-            <td class="${item.durum}">${item.durum.toUpperCase()}</td>
-            <td><button class="silBtn" onclick="sil(${i})">X</button></td>
-        </tr>`;
-    });
-}
-
-function ekle() {
-    const hisse = document.getElementById("hisse").value.trim();
-    const fiyat = document.getElementById("fiyat").value.trim();
-    const durum = document.getElementById("durum").value;
-    if(!hisse) return alert("Hisse adı gir");
-    data.push({hisse, fiyat, durum});
-    kaydet();
-    render();
-    document.getElementById("hisse").value="";
-    document.getElementById("fiyat").value="";
-}
-
-function sil(i) {
-    data.splice(i,1);
-    kaydet();
-    render();
-}
-
-// İlk açılışta hiç kayıt yoksa, AKHAN / ASTOR / KONTR ile başlat
-if (data.length === 0) {
-    data = [
-        { hisse: "AKHAN",  fiyat: "TAVAN (%10)", durum: "tavan" },
-        { hisse: "ASTOR",  fiyat: "",            durum: "bekle" },
-        { hisse: "KONTR",  fiyat: "",            durum: "ekle"  }
+    // Başlangıç listesi – ilk açılışta gözüken satırlar
+    let data = [
+        { hisse: "AKHAN",  durumFiyat: "5. Gün / +0.2%", aksiyon: "tavan" },
+        { hisse: "ASTOR",  durumFiyat: "123.10 TL",      aksiyon: "tavan" },
+        { hisse: "KONTR",  durumFiyat: "295.20 TL",      aksiyon: "hisse-ekle" },
+        { hisse: "ASELS",  durumFiyat: "63.25 TL",       aksiyon: "bekle" }
     ];
-    kaydet();
-}
 
-render();
+    function render() {
+        const tbody = document.getElementById("portfoy-body");
+        tbody.innerHTML = "";
+        data.forEach((item, i) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><strong>${item.hisse}</strong></td>
+                <td>${item.durumFiyat}</td>
+                <td class="${item.aksiyon}">${etiketYaz(item.aksiyon)}</td>
+                <td><button class="silBtn" onclick="sil(${i})">X</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function etiketYaz(aksiyon) {
+        if (aksiyon === "tavan") return "ELİNDE TUT";
+        if (aksiyon === "hisse-ekle") return "HİSSE EKLE";
+        if (aksiyon === "bekle") return "BEKLE";
+        if (aksiyon === "uyari") return "UYARI";
+        return aksiyon.toUpperCase();
+    }
+
+    function ekle() {
+        const hisseInput = document.getElementById("hisse");
+        const dfInput = document.getElementById("durumFiyat");
+        const aksiyonSelect = document.getElementById("aksiyon");
+
+        const hisse = hisseInput.value.trim();
+        const durumFiyat = dfInput.value.trim();
+        const aksiyon = aksiyonSelect.value;
+
+        if (!hisse) {
+            alert("Hisse adı gir");
+            return;
+        }
+
+        data.push({ hisse, durumFiyat, aksiyon });
+        hisseInput.value = "";
+        dfInput.value = "";
+        render();
+    }
+
+    function sil(i) {
+        data.splice(i, 1);
+        render();
+    }
+
+    // Sayfa açıldığında tabloyu çiz
+    render();
 </script>
 
 </body>
