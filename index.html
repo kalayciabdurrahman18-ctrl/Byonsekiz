@@ -1,147 +1,677 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reis Portföy & Radar Canlı</title>
-    <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #0d1117; color: #c9d1d9; margin: 0; padding: 15px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .header { background: #161b22; padding: 20px; text-align: center; border-bottom: 2px solid #30363d; border-radius: 10px 10px 0 0; }
-        h1 { color: #58a6ff; margin: 0; font-size: 22px; }
-        
-        /* Tablo Tasarımı */
-        table { width: 100%; border-collapse: collapse; background: #161b22; border-radius: 0 0 10px 10px; overflow: hidden; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #30363d; }
-        th { background: #21262d; color: #58a6ff; font-size: 11px; text-transform: uppercase; }
-        
-        /* Renkler */
-        .tavan { color: #3fb950; font-weight: bold; }
-        .hisse-ekle { color: #388bfd; font-weight: bold; }
-        .sat { color: #f85149; font-weight: bold; }
-        .bekle { color: #8b949e; font-weight: bold; }
-
-        /* Yönetim Paneli */
-        .admin-panel { background: #1c2128; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px dashed #30363d; }
-        input, select { padding: 8px; margin: 5px; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 5px; width: calc(50% - 20px); }
-        select { width: calc(100% - 20px); }
-        .btn-main { width: 100%; padding: 10px; background: #238636; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 5px; }
-        .del-btn { background: #da3633; padding: 5px 10px; font-size: 11px; color: white; border: none; border-radius: 3px; cursor: pointer; }
-
-        /* RADAR BÖLÜMÜ (VAZGEÇİLMEZ) */
-        .radar-box { background: #ffcc0011; border: 1px solid #ffcc00; padding: 20px; border-radius: 10px; margin-top: 25px; }
-        .radar-title { color: #ffcc00; font-size: 18px; font-weight: bold; display: block; margin-bottom: 10px; }
-        #radarList { font-size: 14px; padding-left: 20px; color: #fff; line-height: 1.8; }
-        .radar-input { width: calc(100% - 20px); margin-top: 10px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reis Portföy Paneli</title>
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #020617;
+    color: #e5e7eb;
+}
+.wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 16px;
+}
+.header {
+    background: radial-gradient(circle at top, #1d4ed8 0, #020617 55%);
+    border-radius: 16px;
+    padding: 20px 20px 16px 20px;
+    box-shadow: 0 18px 45px rgba(15,23,42,0.85);
+    border: 1px solid rgba(148,163,184,0.25);
+}
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #e5e7eb;
+}
+.header-sub {
+    font-size: 12px;
+    color: #9ca3af;
+}
+.badge-live {
+    background: rgba(34,197,94,0.12);
+    color: #bbf7d0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    border: 1px solid rgba(34,197,94,0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #22c55e;
+    box-shadow: 0 0 12px #22c55e;
+    animation: pulse 1.4s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    60% { transform: scale(1.55); opacity: 0.1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.section {
+    margin-top: 18px;
+}
+.card {
+    background: rgba(15,23,42,0.96);
+    border-radius: 14px;
+    border: 1px solid rgba(55,65,81,0.9);
+    box-shadow: 0 18px 45px rgba(15,23,42,0.95);
+}
+.form-card {
+    padding: 16px 16px 10px 16px;
+}
+.section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e5e7eb;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.section-title span {
+    font-size: 18px;
+}
+.form-row {
+    display: grid;
+    grid-template-columns: 2fr 1.3fr 1.3fr;
+    gap: 10px;
+}
+.input, .btn-primary {
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 10px;
+    border: 1px solid rgba(55,65,81,0.9);
+    padding: 9px 10px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, transform 0.05s ease;
+}
+.input {
+    background: radial-gradient(circle at top left, rgba(30,64,175,0.22), rgba(15,23,42,0.98));
+    color: #e5e7eb;
+}
+.input::placeholder {
+    color: #6b7280;
+}
+.input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px rgba(59,130,246,0.35);
+}
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb, #22c55e);
+    color: #e5e7eb;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8, #16a34a);
+    transform: translateY(-0.5px);
+    box-shadow: 0 10px 30px rgba(37,99,235,0.45);
+}
+.btn-primary:active {
+    transform: translateY(0.5px) scale(0.99);
+    box-shadow: 0 4px 10px rgba(15,23,42,0.9);
+}
+.btn-primary span {
+    font-size: 16px;
+}
+.table-card {
+    margin-top: 14px;
+    overflow: hidden;
+}
+.table-scroll {
+    max-height: 420px;
+    overflow-y: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+th, td {
+    padding: 10px 10px;
+    text-align: left;
+    white-space: nowrap;
+}
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+th {
+    background: radial-gradient(circle at top left, rgba(37,99,235,0.4), rgba(15,23,42,1));
+    color: #d1d5db;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(55,65,81,0.9);
+}
+tbody tr:nth-child(even) {
+    background: rgba(15,23,42,0.98);
+}
+tbody tr:nth-child(odd) {
+    background: rgba(15,23,42,0.92);
+}
+tbody tr:hover {
+    background: rgba(30,64,175,0.42);
+}
+.ticker-symbol {
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #e5e7eb;
+}
+.price-cell {
+    font-variant-numeric: tabular-nums;
+    color: #e5e7eb;
+}
+.change-cell {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+.change-pos {
+    color: #4ade80;
+}
+.change-neg {
+    color: #f97373;
+}
+.change-flat {
+    color: #e5e7eb;
+}
+.signal-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    border: 1px solid rgba(75,85,99,0.9);
+    background: rgba(15,23,42,0.9);
+    color: #e5e7eb;
+    gap: 6px;
+}
+.signal-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+}
+.signal-up {
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+}
+.signal-flat {
+    background: #e5e7eb;
+    box-shadow: 0 0 6px rgba(148,163,184,0.7);
+}
+.signal-down {
+    background: #facc15;
+    box-shadow: 0 0 8px #facc15;
+}
+.signal-crash {
+    background: #ef4444;
+    box-shadow: 0 0 10px #ef4444;
+}
+.reis-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    gap: 6px;
+}
+.reis-hold {
+    background: rgba(22,163,74,0.2);
+    color: #bbf7d0;
+    border: 1px solid rgba(34,197,94,0.7);
+    box-shadow: 0 0 14px rgba(34,197,94,0.6);
+    animation: breathe 1.6s infinite;
+}
+.reis-add {
+    background: rgba(37,99,235,0.22);
+    color: #bfdbfe;
+    border: 1px solid rgba(59,130,246,0.9);
+}
+.reis-wait {
+    background: rgba(31,41,55,0.9);
+    color: #e5e7eb;
+    border: 1px solid rgba(75,85,99,1);
+}
+.reis-careful {
+    background: rgba(234,179,8,0.18);
+    color: #facc15;
+    border: 1px solid rgba(234,179,8,0.9);
+}
+.reis-sell {
+    background: rgba(248,113,113,0.16);
+    color: #fecaca;
+    border: 1px solid rgba(248,113,113,0.9);
+}
+@keyframes breathe {
+    0% { transform: scale(1); box-shadow: 0 0 10px rgba(34,197,94,0.4); }
+    50% { transform: scale(1.03); box-shadow: 0 0 22px rgba(34,197,94,0.9); }
+    100% { transform: scale(1); box-shadow: 0 0 10px rgba(34,197,94,0.4); }
+}
+.btn-delete {
+    background: rgba(248,113,113,0.08);
+    border-radius: 999px;
+    padding: 4px 7px;
+    border: 1px solid rgba(248,113,113,0.8);
+    color: #fecaca;
+    cursor: pointer;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+}
+.btn-delete:hover {
+    background: rgba(248,113,113,0.35);
+    box-shadow: 0 0 16px rgba(248,113,113,0.7);
+}
+.btn-delete:active {
+    transform: translateY(0.5px) scale(0.97);
+}
+.ticker-tape-card {
+    margin-top: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(55,65,81,0.9);
+    background: radial-gradient(circle at top left, rgba(37,99,235,0.4), rgba(15,23,42,1));
+}
+.radar-card {
+    margin-top: 22px;
+    padding: 16px 16px 14px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(250,204,21,0.85);
+    background: linear-gradient(135deg, rgba(250,204,21,0.12), rgba(15,23,42,0.98));
+    box-shadow: 0 16px 40px rgba(202,138,4,0.35);
+}
+.radar-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #facc15;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.radar-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(250,204,21,0.8);
+    color: #fed7aa;
+    background: rgba(30,64,175,0.2);
+}
+.radar-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 8px 0 0 0;
+    font-size: 12px;
+    color: #e5e7eb;
+}
+.radar-list li {
+    margin-bottom: 6px;
+}
+.radar-tag {
+    font-weight: 600;
+    color: #fde68a;
+}
+.footer-note {
+    margin-top: 14px;
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: right;
+}
+@media (max-width: 720px) {
+    .form-row {
+        grid-template-columns: 1.8fr 1.4fr;
+        grid-template-rows: auto auto;
+    }
+    .form-row .btn-primary {
+        grid-column: span 2;
+    }
+    th, td {
+        padding: 8px 8px;
+        font-size: 11px;
+    }
+}
+</style>
 </head>
 <body>
-
-<div class="container">
-    <div class="admin-panel">
-        <strong style="color: #58a6ff;">➕ Hızlı İşlem Paneli:</strong><br>
-        <input type="text" id="hAd" placeholder="Hisse Adı">
-        <input type="text" id="hDurum" placeholder="Durum (Örn: +5%)">
-        <select id="hRenk">
-            <option value="tavan">YEŞİL (Tavan/Tut)</option>
-            <option value="hisse-ekle">MAVİ (Ekle)</option>
-            <option value="sat">KIRMIZI (Sat)</option>
-            <option value="bekle">GRİ (Bekle)</option>
-        </select>
-        <button class="btn-main" onclick="hisseEkle()">LİSTEYE EKLE</button>
-        <hr style="border: 0.5px solid #30363d; margin: 15px 0;">
-        <strong style="color: #ffcc00;">🎯 Radar Güncelle:</strong>
-        <input type="text" id="rNot" class="radar-input" placeholder="Radar Notu (Hisse: Not şeklinde)">
-        <button class="btn-main" style="background: #d29922;" onclick="radarEkle()">RADARA EKLE</button>
-    </div>
-
+<div class="wrapper">
     <div class="header">
-        <h1>🚀 REİS PORTFÖY YÖNETİMİ</h1>
+        <div class="header-top">
+            <div>
+                <div class="header-title">🚀 REİS PORTFÖY PANELİ</div>
+                <div class="header-sub">Canlı fiyat, akıllı sinyal ve REİS aksiyon motoru</div>
+            </div>
+            <div class="badge-live">
+                <span class="badge-dot"></span>
+                <span>Canlı Veri Modu</span>
+            </div>
+        </div>
     </div>
 
-    <table id="hTable">
-        <thead>
-            <tr>
-                <th>Hisse</th>
-                <th>Durum / Fiyat</th>
-                <th>Aksiyon</th>
-                <th>İşlem</th>
-            </tr>
-        </thead>
-        <tbody>
-            </tbody>
-    </table>
+    <div class="section ticker-tape-card">
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+                "symbols": [
+                    { "proName": "BIST:XU100", "title": "BIST 100" },
+                    { "proName": "BIST:ASELS", "title": "ASELS" },
+                    { "proName": "BIST:AKBNK", "title": "AKBANK" },
+                    { "proName": "BIST:ASTOR", "title": "ASTOR" },
+                    { "proName": "BIST:KONTR", "title": "KONTR" }
+                ],
+                "showSymbolLogo": true,
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "displayMode": "adaptive",
+                "locale": "tr"
+            }
+            </script>
+        </div>
+    </div>
 
-    <div class="radar-box">
-        <span class="radar-title">🎯 GÜNLÜK RADAR & POTANSİYEL (09:50)</span>
-        <ul id="radarList">
-            </tbody>
+    <div class="section card form-card">
+        <div class="section-title">
+            <span>📥</span>
+            <div>Reis'in Hisse Toplama Konsolu</div>
+        </div>
+        <div class="form-row">
+            <input id="symbolInput" class="input" placeholder="Hisse Kodu (örn: AKBNK)">
+            <input id="noteInput" class="input" placeholder="Opsiyonel Not (örn: Portföy %5)">
+            <button id="addButton" class="btn-primary">
+                <span>➕</span>
+                <span>Canlı Fiyat Çek ve Ekle</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="section card table-card">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hisse Kodu</th>
+                        <th>Canlı Fiyat</th>
+                        <th>Günlük Değişim</th>
+                        <th>Sinyal</th>
+                        <th>Reis Aksiyon</th>
+                        <th>Not</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section radar-card">
+        <div class="radar-title">
+            <span>🎯 REİS'İN GÖZÜ</span>
+            <span class="radar-badge">09:50 RADAR ALANI • Gemini analizi buraya yazılacak</span>
+        </div>
+        <ul class="radar-list" id="radarList">
+            <li><span class="radar-tag">Örnek 1:</span> XU100 üzerinde hacim artışı izleniyor, bankalar öne çıkarsa portföy ağırlığı gözden geçirilebilir.</li>
+            <li><span class="radar-tag">Örnek 2:</span> Defansif hisselerde geri çekilme alım fırsatına dönüşebilir, destek seviyeleri takip edilmeli.</li>
+            <li><span class="radar-tag">Örnek 3:</span> Teknoloji tarafında açılışta aşırı yükseliş olursa kâr realizasyonu senaryosu masada.</li>
+        </ul>
+    </div>
+
+    <div class="footer-note">
+        Veriler localStorage içinde saklanır. API cevap vermezse mock veri kullanılır, gerçek seans için kendi API anahtarını tanımla.
     </div>
 </div>
 
 <script>
-    window.onload = function() { yenile(); };
+var API_KEY = "";
+var STORAGE_KEY = "reis_portfoy_v1";
+var rows = [];
 
-    // HİSSE EKLEME
-    function hisseEkle() {
-        const ad = document.getElementById('hAd').value;
-        const durum = document.getElementById('hDurum').value;
-        const renk = document.getElementById('hRenk').value;
-        if(!ad || !durum) return;
-        let p = JSON.parse(localStorage.getItem('p')) || [];
-        p.push({ ad, durum, renk });
-        localStorage.setItem('p', JSON.stringify(p));
-        yenile();
-        document.getElementById('hAd').value = ''; document.getElementById('hDurum').value = '';
+function loadFromStorage() {
+    try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+            rows = [];
+            return;
+        }
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+            rows = parsed;
+        } else {
+            rows = [];
+        }
+    } catch (e) {
+        rows = [];
+    }
+}
+
+function saveToStorage() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+    } catch (e) {
+    }
+}
+
+function formatPrice(v) {
+    if (v === null || v === undefined || isNaN(v)) return "-";
+    return Number(v).toFixed(2);
+}
+
+function formatChangePercent(v) {
+    if (v === null || v === undefined || isNaN(v)) return "-";
+    var num = Number(v);
+    var sign = num > 0 ? "+" : "";
+    return sign + num.toFixed(2) + " %";
+}
+
+function classifySignal(change) {
+    if (change === null || change === undefined || isNaN(change)) {
+        return { label: "Veri Yok", visual: "flat", css: "change-flat" };
+    }
+    var c = Number(change);
+    if (c >= 3) {
+        return { label: "Güçlü Yükseliş", visual: "up", css: "change-pos" };
+    }
+    if (c >= 0.5 && c < 3) {
+        return { label: "Yükseliş", visual: "up", css: "change-pos" };
+    }
+    if (c > -0.5 && c < 0.5) {
+        return { label: "Yatay Seyir", visual: "flat", css: "change-flat" };
+    }
+    if (c <= -0.5 && c > -3) {
+        return { label: "Düşüş", visual: "down", css: "change-neg" };
+    }
+    if (c <= -3) {
+        return { label: "Sert Düşüş", visual: "crash", css: "change-neg" };
+    }
+    return { label: "Nötr", visual: "flat", css: "change-flat" };
+}
+
+function classifyReisAction(change) {
+    if (change === null || change === undefined || isNaN(change)) {
+        return { label: "Veri Bekleniyor", css: "reis-wait" };
+    }
+    var c = Number(change);
+    if (c >= 3) {
+        return { label: "Elinde Tut", css: "reis-hold" };
+    }
+    if (c >= 0 && c < 2) {
+        return { label: "Hisse Ekle", css: "reis-add" };
+    }
+    if (c > -0.5 && c < 0.5) {
+        return { label: "Beklemede Kal", css: "reis-wait" };
+    }
+    if (c <= -1 && c > -3) {
+        return { label: "Dikkat Et", css: "reis-careful" };
+    }
+    if (c <= -4) {
+        return { label: "Derhal Sat", css: "reis-sell" };
+    }
+    return { label: "Beklemede Kal", css: "reis-wait" };
+}
+
+function renderTable() {
+    var tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+    for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        var signal = classifySignal(r.changePercent);
+        var reis = classifyReisAction(r.changePercent);
+        var tr = document.createElement("tr");
+
+        var changeClass = "change-flat";
+        if (signal.css) changeClass = signal.css;
+
+        var signalDotClass = "signal-flat";
+        if (signal.visual === "up") signalDotClass = "signal-up";
+        else if (signal.visual === "down") signalDotClass = "signal-down";
+        else if (signal.visual === "crash") signalDotClass = "signal-crash";
+
+        var reisClass = reis.css + " reis-pill";
+
+        tr.innerHTML =
+            '<td><span class="ticker-symbol">' + (r.symbol || "-") + '</span></td>' +
+            '<td><span class="price-cell">' + formatPrice(r.price) + '</span></td>' +
+            '<td><span class="change-cell ' + changeClass + '">' + formatChangePercent(r.changePercent) + '</span></td>' +
+            '<td><span class="signal-pill"><span class="signal-dot ' + signalDotClass + '"></span><span>' + signal.label + '</span></span></td>' +
+            '<td><span class="' + reisClass + '">' + reis.label.toUpperCase() + '</span></td>' +
+            '<td>' + (r.note ? r.note : "") + '</td>' +
+            '<td><button class="btn-delete" data-index="' + i + '">X</button></td>';
+
+        tbody.appendChild(tr);
     }
 
-    // RADAR EKLEME
-    function radarEkle() {
-        const not = document.getElementById('rNot').value;
-        if(!not) return;
-        let r = JSON.parse(localStorage.getItem('r')) || [];
-        r.push(not);
-        localStorage.setItem('r', JSON.stringify(r));
-        yenile();
-        document.getElementById('rNot').value = '';
+    var buttons = tbody.querySelectorAll(".btn-delete");
+    for (var j = 0; j < buttons.length; j++) {
+        buttons[j].onclick = function (ev) {
+            var idx = ev.currentTarget.getAttribute("data-index");
+            var num = parseInt(idx, 10);
+            if (!isNaN(num)) {
+                rows.splice(num, 1);
+                saveToStorage();
+                renderTable();
+            }
+        };
     }
+}
 
-    function sil(i) {
-        let p = JSON.parse(localStorage.getItem('p'));
-        p.splice(i, 1);
-        localStorage.setItem('p', JSON.stringify(p));
-        yenile();
-    }
+function mockQuote(symbol) {
+    var base = Math.random() * 50 + 50;
+    var change = Math.round((Math.random() * 10 - 5) * 100) / 100;
+    var percent = change;
+    var price = base * (1 + percent / 100);
+    return {
+        symbol: symbol,
+        price: price,
+        changePercent: percent
+    };
+}
 
-    function rSil(i) {
-        let r = JSON.parse(localStorage.getItem('r'));
-        r.splice(i, 1);
-        localStorage.setItem('r', JSON.stringify(r));
-        yenile();
-    }
-
-    function yenile() {
-        const tb = document.querySelector('#hTable tbody');
-        const rl = document.getElementById('radarList');
-        let p = JSON.parse(localStorage.getItem('p')) || [
-            {ad: 'AKHAN', durum: '5. Gün / +0.4%', renk: 'tavan'},
-            {ad: 'ASTOR', durum: '123.40 TL', renk: 'tavan'}
-        ];
-        let r = JSON.parse(localStorage.getItem('r')) || [
-            "ASTOR: 122 TL direnci kırıldı, hedef 130+",
-            "SMRTG: 68.50 TL desteği takipte"
-        ];
-        
-        tb.innerHTML = '';
-        p.forEach((h, i) => {
-            tb.innerHTML += `<tr><td><strong>${h.ad}</strong></td><td>${h.durum}</td><td class="${h.renk}">${h.renk.toUpperCase()}</td><td><button class="del-btn" onclick="sil(${i})">X</button></td></tr>`;
+function fetchFromFinnhub(symbol) {
+    if (!API_KEY) {
+        return new Promise(function (resolve) {
+            resolve(mockQuote(symbol));
         });
-
-        rl.innerHTML = '';
-        r.forEach((n, i) => {
-            rl.innerHTML += `<li onclick="rSil(${i})" style="cursor:pointer">${n} <small>(Silmek için tıkla)</small></li>`;
-        });
     }
+    var url = "https://finnhub.io/api/v1/quote?symbol=" + encodeURIComponent(symbol) + "&token=" + encodeURIComponent(API_KEY);
+    return fetch(url).then(function (res) {
+        if (!res.ok) {
+            return mockQuote(symbol);
+        }
+        return res.json().then(function (data) {
+            if (!data || typeof data.c !== "number") {
+                return mockQuote(symbol);
+            }
+            var price = data.c;
+            var percent = typeof data.dp === "number" ? data.dp : 0;
+            return {
+                symbol: symbol,
+                price: price,
+                changePercent: percent
+            };
+        }).catch(function () {
+            return mockQuote(symbol);
+        });
+    }).catch(function () {
+        return mockQuote(symbol);
+    });
+}
+
+function handleAdd() {
+    var symbolInput = document.getElementById("symbolInput");
+    var noteInput = document.getElementById("noteInput");
+    var rawSymbol = symbolInput.value.trim();
+    if (!rawSymbol) {
+        alert("Lütfen bir hisse kodu gir.");
+        return;
+    }
+    var symbol = rawSymbol.toUpperCase();
+    var note = noteInput.value.trim();
+
+    var btn = document.getElementById("addButton");
+    var previousText = btn.innerText;
+    btn.disabled = true;
+    btn.innerText = "Veri çekiliyor...";
+
+    fetchFromFinnhub(symbol).then(function (q) {
+        rows.push({
+            symbol: q.symbol,
+            price: q.price,
+            changePercent: q.changePercent,
+            note: note
+        });
+        saveToStorage();
+        renderTable();
+        symbolInput.value = "";
+        noteInput.value = "";
+    }).finally(function () {
+        btn.disabled = false;
+        btn.innerText = previousText;
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    loadFromStorage();
+    renderTable();
+    var btn = document.getElementById("addButton");
+    btn.addEventListener("click", function () {
+        handleAdd();
+    });
+    var symbolInput = document.getElementById("symbolInput");
+    symbolInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            handleAdd();
+        }
+    });
+});
 </script>
 </body>
 </html>
