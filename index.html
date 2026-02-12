@@ -22,25 +22,16 @@ body {
     border-bottom:2px solid #30363d;
 }
 h1 { color:#58a6ff; margin:0; font-size:22px; }
-h2 {
-    margin:20px 0 8px;
-    font-size:16px;
-    color:#58a6ff;
-}
 
-/* Ortak tablo stili */
-.table-wrapper {
-    background:#161b22;
-    border-radius:10px;
-    overflow:hidden;
-    margin-top:5px;
-}
 table {
     width:100%;
     border-collapse:collapse;
+    background:#161b22;
+    border-radius:0 0 10px 10px;
+    overflow:hidden;
 }
 th, td {
-    padding:12px;
+    padding:14px;
     border-bottom:1px solid #30363d;
 }
 th {
@@ -94,13 +85,6 @@ th {
     color:#8b949e;
     text-align:center;
 }
-.badge {
-    display:inline-block;
-    padding:2px 6px;
-    border-radius:999px;
-    font-size:11px;
-    border:1px solid #30363d;
-}
 </style>
 </head>
 
@@ -108,58 +92,31 @@ th {
 <div class="container">
 
 <div class="header">
-<h1>🚀 REİS PORTFÖY YÖNETİMİ</h1>
+<h1>🚀 REİS PORTFÖY & RADAR</h1>
 </div>
+
+<table>
+<thead>
+<tr>
+<th>Hisse</th>
+<th>Fiyat / Not</th>
+<th>Durum</th>
+<th>Sil</th>
+</tr>
+</thead>
+<tbody id="portfolio"></tbody>
+</table>
 
 <div class="form-box">
 <h3>➕ Manuel Hisse Ekle</h3>
 <input id="hisse" placeholder="Hisse Kodu (ASELS)">
 <input id="fiyat" placeholder="Fiyat / Not">
-
-<select id="tur">
-    <option value="Radar">Radar</option>
-    <option value="Potansiyel">Potansiyel</option>
-</select>
-
 <select id="durum">
     <option value="tavan">ELİNDE TUT</option>
     <option value="bekle">BEKLE</option>
     <option value="ekle">HİSSE EKLE</option>
 </select>
-
 <button onclick="ekle()">Kaydet</button>
-</div>
-
-<!-- RADAR TABLOSU -->
-<h2>📡 Radar Listesi</h2>
-<div class="table-wrapper">
-<table>
-    <thead>
-    <tr>
-        <th>Hisse</th>
-        <th>Fiyat / Not</th>
-        <th>Aksiyon</th>
-        <th>Sil</th>
-    </tr>
-    </thead>
-    <tbody id="radar-body"></tbody>
-</table>
-</div>
-
-<!-- POTANSİYEL TABLOSU -->
-<h2>🔥 Potansiyel Listesi</h2>
-<div class="table-wrapper">
-<table>
-    <thead>
-    <tr>
-        <th>Hisse</th>
-        <th>Fiyat / Not</th>
-        <th>Aksiyon</th>
-        <th>Sil</th>
-    </tr>
-    </thead>
-    <tbody id="potansiyel-body"></tbody>
-</table>
 </div>
 
 <div class="info-footer">
@@ -171,70 +128,50 @@ Veriler cihazda saklanır (localStorage) • GitHub Pages uyumlu
 <script>
 let data = JSON.parse(localStorage.getItem("portfoy")) || [];
 
-// Eğer hiç kayıt yoksa, AKHAN satırını başlangıç olarak ekle
-if (data.length === 0) {
-    data.push({
-        hisse: "AKHAN",
-        fiyat: "TAVAN (%10)",
-        durum: "tavan",
-        tur: "Radar",
-        etiket: "KEYFİNİ ÇIKAR"
-    });
-    kaydet();
-}
-
 function kaydet() {
     localStorage.setItem("portfoy", JSON.stringify(data));
 }
 
 function render() {
-    const radarBody = document.getElementById("radar-body");
-    const potBody = document.getElementById("potansiyel-body");
-
-    radarBody.innerHTML = "";
-    potBody.innerHTML = "";
-
+    const tbody = document.getElementById("portfolio");
+    tbody.innerHTML = "";
     data.forEach((item, i) => {
-        const tur = item.tur || "Radar"; // eski kayıtlar için varsayılan Radar
-        const hedefBody = tur === "Potansiyel" ? potBody : radarBody;
-
-        const etiket = item.etiket ? item.etiket : item.durum.toUpperCase();
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
+        tbody.innerHTML += `
+        <tr>
             <td><strong>${item.hisse}</strong></td>
             <td>${item.fiyat}</td>
-            <td class="${item.durum}">
-                <span class="badge ${item.durum}">${etiket}</span>
-            </td>
-            <td>
-                <button class="silBtn" onclick="sil(${i})">X</button>
-            </td>
-        `;
-        hedefBody.appendChild(tr);
+            <td class="${item.durum}">${item.durum.toUpperCase()}</td>
+            <td><button class="silBtn" onclick="sil(${i})">X</button></td>
+        </tr>`;
     });
 }
 
 function ekle() {
     const hisse = document.getElementById("hisse").value.trim();
     const fiyat = document.getElementById("fiyat").value.trim();
-    const tur = document.getElementById("tur").value;
     const durum = document.getElementById("durum").value;
-
-    if (!hisse) return alert("Hisse adı gir");
-
-    data.push({ hisse, fiyat, durum, tur });
+    if(!hisse) return alert("Hisse adı gir");
+    data.push({hisse, fiyat, durum});
     kaydet();
     render();
-
-    document.getElementById("hisse").value = "";
-    document.getElementById("fiyat").value = "";
+    document.getElementById("hisse").value="";
+    document.getElementById("fiyat").value="";
 }
 
 function sil(i) {
-    data.splice(i, 1);
+    data.splice(i,1);
     kaydet();
     render();
+}
+
+// İlk açılışta hiç kayıt yoksa, AKHAN / ASTOR / KONTR ile başlat
+if (data.length === 0) {
+    data = [
+        { hisse: "AKHAN",  fiyat: "TAVAN (%10)", durum: "tavan" },
+        { hisse: "ASTOR",  fiyat: "",            durum: "bekle" },
+        { hisse: "KONTR",  fiyat: "",            durum: "ekle"  }
+    ];
+    kaydet();
 }
 
 render();
